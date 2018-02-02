@@ -114,6 +114,15 @@ class Admin::UsersController < Admin::BaseController
     end
   end
 
+  def destroy
+    @user = User.find(params[:id])
+    @user.destroy
+    render js:"
+      $('#user-#{@user.id}').fadeOut();
+      Helpy.ready();
+      Helpy.track();"
+  end
+
   def invite
   end
 
