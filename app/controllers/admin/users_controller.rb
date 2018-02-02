@@ -115,7 +115,7 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def destroy
-    @user = User.find(params[:id])
+    @user = User.where(id: params[:id]).first
     @user.destroy
     render js:"
       $('#user-#{@user.id}').fadeOut();
