@@ -90,7 +90,7 @@ class User < ActiveRecord::Base
   paginates_per 15
 
   # Relationships
-  has_and_belongs_to_many :roles
+  #has_and_belongs_to_many :roles
   has_many :topics
   has_many :posts
   has_many :votes
