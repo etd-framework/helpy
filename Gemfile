@@ -13,6 +13,9 @@ gem 'uglifier', '>= 1.3.0'
 # Explicitly include Nokogiri to control version
 gem 'nokogiri', '>= 1.8.1'
 
+# Whenver
+gem 'whenever', require: false
+
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
@@ -115,7 +118,7 @@ gem 'config', '~> 1.1.0', git: 'https://github.com/railsconfig/config.git'
 gem 'daemons'
 gem 'mailman'#, require: false
 gem 'mail_extract'
-
+gem 'mail'
 gem 'griddler'
 gem 'griddler-mandrill'
 gem 'griddler-sendgrid'

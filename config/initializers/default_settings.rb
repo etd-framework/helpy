@@ -72,6 +72,12 @@ AppSettings.defaults["email.mail_smtp"] = Settings.mail_smtp
 AppSettings.defaults["email.mail_port"] = Settings.mail_port
 AppSettings.defaults["email.mail_domain"]= Settings.mail_domain
 
+AppSettings.defaults["email.imap_server"] = Settings.imap_server
+AppSettings.defaults["email.imap_username"] = Settings.imap_username
+AppSettings.defaults["email.imap_password"]= Settings.imap_password
+AppSettings.defaults["email.imap_security"]= Settings.imap_security
+AppSettings.defaults["email.imap_port"]= Settings.imap_port
+
 # notifications
 
 AppSettings.defaults["notify.on_private"] = "1"

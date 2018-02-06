@@ -11,17 +11,17 @@ class EmailProcessor
     # if the email presented is invalid and generates a 500.  Returns a 200
     # error as discussed on https://sendgrid.com/docs/API_Reference/Webhooks/parse.html
     # This error happened with invalid email addresses from PureChat
-    return if @email.from[:email].match(/\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/).blank?
+    return if @email[:from].addrs.first.address.match(/\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/).blank?
 
     # scan users DB for sender email
-    @user = User.where("lower(email) = ?", @email.from[:email].downcase).first
+    @user = User.where("lower(email) = ?", @email[:from].addrs.first.address.downcase).first
     if @user.nil?
       create_user
     end
 
     sitename = AppSettings["settings.site_name"]
-    message = @email.body.nil? ? "" : @email.body
-    raw = @email.raw_body.nil? ? "" : @email.raw_body
+    message = get_content_from_mail
+    raw = @email.body.raw_source.nil? ? "" : @email.body.raw_source
 
     subject = @email.subject
     attachments = @email.attachments
@@ -83,13 +83,13 @@ class EmailProcessor
       # if @email.header['X-Helpy-Teams'].present?
       #   topic.team_list = @email.header['X-Helpy-Teams']
 
-      if @email.to[0][:token].include?("+")
-        topic.team_list.add(@email.to[0][:token].split('+')[1])
-        topic.save
-      elsif @email.to[0][:token] != 'support'
-        topic.team_list.add(@email.to[0][:token])
-        topic.save
-      end
+      #if @email.to[0][:token].include?("+")
+      #  topic.team_list.add(@email.to[0][:token].split('+')[1])
+      #  topic.save
+      #elsif @email.to[0][:token] != 'support'
+      #  topic.team_list.add(@email.to[0][:token])
+      #  topic.save
+      #end
 
       #insert post to new topic
       message = "Attachments:" if @email.attachments.present? && @email.body.blank?
@@ -147,12 +147,37 @@ class EmailProcessor
     @user.reset_password_token = enc
     @user.reset_password_sent_at = Time.now.utc
 
-    @user.email = @email.from[:email]
-    @user.name = @email.from[:name].blank? ? @email.from[:token].gsub(/[^a-zA-Z]/, '') : @email.from[:name]
+    @user.email = get_email_from_mail
+    @user.name = get_name_from_mail.blank? ? get_token_from_mail : get_name_from_mail
     @user.password = User.create_password
     if @user.save
       UserMailer.new_user(@user.id, @token).deliver_later
     end
 
+  end
+
+  def get_name_from_mail
+    mail_is_mail ? @email[:from].addrs.first.display_name : @email.from[:name]
+  end
+
+  def get_email_from_mail
+    mail_is_mail ? @email[:from].addrs.first.address : @email.from[:email]
+  end
+
+  def get_token_from_mail
+    #this seems to only be there for griddler and co
+    @email.from[:token]
+  end
+
+  def get_content_from_mail
+    if mail_is_mail
+      @email.multipart? ? (@email.text_part ? @email.text_part.body.decoded : nil) : @email.body.decoded
+    else
+      MailExtract.new(@email.body).body
+    end
+  end
+
+  def mail_is_mail
+    @email.class.name == 'Mail::Message'
   end
 end
