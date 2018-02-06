@@ -22,6 +22,7 @@ class EmailProcessor
     sitename = AppSettings["settings.site_name"]
     message = get_content_from_mail
     raw = @email.body.raw_source.nil? ? "" : @email.body.raw_source
+    cc = @email.cc ? @email.cc.map { |e| e[:full] }.join(", ") : nil
 
     subject = @email.subject
     attachments = @email.attachments
@@ -38,6 +39,7 @@ class EmailProcessor
         :body => message.encode('utf-8', invalid: :replace, replace: '?'),
         :raw_email => raw.encode('utf-8', invalid: :replace, replace: '?'),
         :user_id => @user.id,
+        :cc => cc,
         :kind => "reply"
       )
 
@@ -66,6 +68,7 @@ class EmailProcessor
         :body => message.encode('utf-8', invalid: :replace, replace: '?'),
         :raw_email => raw.encode('utf-8', invalid: :replace, replace: '?'),
         :user_id => @user.id,
+        :cc => cc,
         kind: 'first'
       )
 
@@ -97,6 +100,7 @@ class EmailProcessor
         :body => message.encode('utf-8', invalid: :replace, replace: '?'),
         :raw_email => raw.encode('utf-8', invalid: :replace, replace: '?'),
         :user_id => @user.id,
+        :cc => cc,
         :kind => "first"
       )
 
