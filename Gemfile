@@ -111,6 +111,7 @@ gem 'selectize-rails'
 gem "bootstrap-switch-rails"
 gem 'bootstrap-datepicker-rails'
 gem 'bootstrap-select-rails'
+gem 'gemoji'
 
 gem 'config', '~> 1.1.0', git: 'https://github.com/railsconfig/config.git'
 
@@ -126,6 +127,10 @@ gem 'griddler-mailgun'
 gem 'griddler-postmark'
 gem 'griddler-mailin'
 gem 'griddler-sparkpost'
+
+# html Email
+gem 'inky-rb', require: 'inky'
+gem 'premailer-rails'
 
 gem 'rails-timeago'
 
@@ -172,7 +177,6 @@ gem 'roo'
 
 group :development do
   gem "better_errors"
-  gem 'mailcatcher'
 
   # Check Eager Loading / N+1 query problems
   gem 'bullet'
